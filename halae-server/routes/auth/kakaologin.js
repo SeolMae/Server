@@ -2,8 +2,8 @@
 // /* /user/kakaologin */
 // /* 종찬 */
 
-// const express = require('express');
-// const router = express.Router();
+ const express = require('express');
+ const router = express.Router();
 // const async = require('async');
 // const bodyParser = require('body-parser');
 // const http = require('http');
@@ -145,7 +145,7 @@
 
 // });
 
-// module.exports = router;
+ module.exports = router;
 
 
 // // test kakaotalk accessToken
