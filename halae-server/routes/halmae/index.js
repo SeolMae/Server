@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // info (할머니 정보 보기 & 정보 수정하기)
-router.use('/info', require('./info'));
+router.use('/', require('./info'));
 
 // schedule 할머니 스케쥴 보기 
 router.use('/schedule', require('./schedule'));
