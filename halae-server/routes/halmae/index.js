@@ -13,4 +13,7 @@ router.use('/board', require('./board'));
 // filter 할머니 검색 필터링 
 router.use('/filter', require('./filter'));
 
+// group 할머니 그룹 보여주기 
+router.use('/group', require('./group'));
+
 module.exports = router;
