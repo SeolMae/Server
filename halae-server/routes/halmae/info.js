@@ -1,10 +1,9 @@
-//한 할머니 정보 보기 & 정보 수정하기 
+//한 할머니 정보 보기 
 var express = require('express');
 var router = express.Router();
 const async = require('async');
 
 const db = require('../../module/pool.js');
-const jwt = require('../../module/jwt.js');
 
 //파라미터로 할머니 idx 
 //halmate 테이블에서 할머니 정보(이름, 성별, 주소, 번호)  +  volunteer 테이블에서 할머니 idx 에 봉사자 count 
@@ -57,7 +56,7 @@ router.get('/:hal_idx', async(req, res) => {
   }catch(err){
     console.log(err);
     res.status(500).send({
-      "message" : "Server error"
+      "message" : "Internal Server error"
     });
   }
 });
