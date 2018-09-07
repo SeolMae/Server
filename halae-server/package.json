@@ -13,6 +13,7 @@
     "jade": "~1.11.0",
     "moment": "^2.22.2",
     "morgan": "~1.9.0",
-    "promise-mysql": "^3.3.1"
+    "promise-mysql": "^3.3.1",
+    "request-promise": "^4.2.2"
   }
 }

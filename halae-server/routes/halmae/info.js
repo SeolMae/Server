@@ -1,4 +1,4 @@
-//한 할머니 정보 보기 & 정보 수정하기 
+//한 할머니 정보 보기 
 var express = require('express');
 var router = express.Router();
 const async = require('async');
