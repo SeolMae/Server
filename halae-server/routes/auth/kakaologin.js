@@ -1,7 +1,3 @@
-// /* 카카오톡 로그인 */
-// /* /user/kakaologin */
-// /* 종찬 */
-
  const express = require('express');
  const router = express.Router();
 const async = require('async');
@@ -19,6 +15,7 @@ const request = require('request-promise');
 
 router.post('/', async(req, res, next) => {
   console.log("===insert_userinfo.js ::: router('/')===");
+  
   // 카카오톡 access token
   let accessToken = req.body.accessToken;
   if(!accessToken){
@@ -71,7 +68,7 @@ router.post('/', async(req, res, next) => {
 
     let insertQuery =
     `
-    INSERT INTO user (usr_id, usr_img, usr_name, usr_fcmToken)
+    INSERT INTO user (id, nickname, img_url, fcmToken)
     VALUES (?, ?, ?, ?);
     `;
     let updateToken =
@@ -97,7 +94,6 @@ router.post('/', async(req, res, next) => {
         res.status(201).send({
           data : {
             id : id,
-            nickname : nickname,
             token : token
           },
           message : "success"
@@ -115,7 +111,6 @@ router.post('/', async(req, res, next) => {
         res.status(201).send({
           data : {
             id : id,
-            nickname : nickname,
             token : token
           },
           message : "success"
@@ -123,14 +118,13 @@ router.post('/', async(req, res, next) => {
       } else{ // 다른 기기이고 회원이 아닐때
         console.log("비회원입니다.")
 
-        let insertResult = await db.queryParamCnt_Arr(insertQuery,[id, img_url , nickname, fcmToken]);
+        let insertResult = await db.queryParamCnt_Arr(insertQuery,[id, nickname ,img_url, fcmToken]);
 
         token = jwt.sign(id);
 
         res.status(201).send({
           data : {
             id : id,
-            nickname : nickname,
             token : token
           },
           message : "success"
@@ -151,5 +145,5 @@ router.post('/', async(req, res, next) => {
  module.exports = router;
 
 
-// // test kakaotalk accessToken
-// // 2boHtx7R8VbqhnWNE_pcIUvFX4RLNsAKD8eQSQo8BVUAAAFkaVQVfQH2ACd2WBP9T2HiuqNQxueKIWuxsSk-idgEyhSQo8BZUAAAFkaO2ToA
+// test kakaotalk accessToken
+// 2boHtx7R8VbqhnWNE_pcIUvFX4RLNsAKD8eQSQo8BVUAAAFkaVQVfQH2ACd2WBP9T2HiuqNQxueKIWuxsSk-idgEyhSQo8BZUAAAFkaO2ToA

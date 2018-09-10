@@ -12,9 +12,13 @@
     "express": "~4.16.0",
     "http-errors": "^1.6.3",
     "jade": "~1.11.0",
+<<<<<<< HEAD
     "jsonwebtoken": "^8.3.0",
+=======
+>>>>>>> 7b7e5bb803450b5f09be7d97103f4ab539ff74b6
     "moment": "^2.22.2",
     "morgan": "~1.9.0",
-    "promise-mysql": "^3.3.1"
+    "promise-mysql": "^3.3.1",
+    "request-promise": "^4.2.2"
   }
 }
