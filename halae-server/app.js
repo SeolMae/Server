@@ -10,6 +10,7 @@ var authRouter=require('./routes/auth');
 var donateRouter=require('./routes/donate');
 var halmaeRouter=require('./routes/halmae');
 var usrRouter=require('./routes/usr');
+var recRouter=require('./routes/recommend');
 
 var app = express();
 
@@ -29,6 +30,7 @@ app.use('/auth', authRouter);
 app.use('/donate', donateRouter);
 app.use('/halmae', halmaeRouter);
 app.use('/usr', usrRouter);
+app.use('/recommend', recRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

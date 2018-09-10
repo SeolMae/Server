@@ -10,7 +10,7 @@ var router = express.Router();
 router.use('/auth', require('./auth/index'));
 
 //halmae
-router.use('halmae', require('./halmae/index'));
+router.use('/halmae', require('./halmae/index'));
 
 // board
 router.use('/board', require('./board/index'));
@@ -20,5 +20,8 @@ router.use('/donate', require('./donate/index'));
 
 // usr
 router.use('/usr', require('./usr/index'));
+
+// recommend
+router.use('/recommend', require('./recommend/index'));
 
 module.exports = router;
