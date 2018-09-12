@@ -26,8 +26,8 @@ router.post('/', async(req, res, next) => {
 
     return;
   }
-  // push 알람 클라이언트 토큰
-  let fcmToken = req.body.fcmToken;
+  // // push 알람 클라이언트 토큰
+  // let fcmToken = req.body.fcmToken;
 
   let option = {
     method : 'GET',
