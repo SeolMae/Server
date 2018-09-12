@@ -7,11 +7,10 @@ const jwt = require('../../module/jwt.js');
 
 
 router.get('/', async function(req, res){
-    let token;
+    let token=req.headers.token; 
     let user_user_idx; //접속되어 있는 유저
 
     if(token){
-        token = req.headers.token; 
 
         let decoded = jwt.verify(token);
     
@@ -21,6 +20,12 @@ router.get('/', async function(req, res){
             }); 
         }
         user_user_idx = decoded.user_idx;
+    }
+    else{
+            res.status(403).send({
+                message : "no token"
+            }); 
+        return;
     }
 
     let user_name;
