@@ -8,19 +8,25 @@ const jwt = require('../../module/jwt.js');
 //유저의 기부내역 확인하기
 router.get('/', async (req, res) => {
 
-    let token = req.headers.token;
-    let decoded = jwt.verify(token);
-    let user_id;
-    //decoding 실패시
-    if(decoded == -1){
-        res.status(500).send({
-            message : "Token Error"
-        });
-        return;
+    let token=req.headers.token; 
+    let user_user_idx; //접속되어 있는 유저
+
+    if(token){
+
+        let decoded = jwt.verify(token);
+    
+        if (decoded == -1){
+            res.status(500).send({
+                message : "Token error"
+            }); 
+        }
+        user_user_idx = decoded.user_idx;
     }
-    //정상 수행 시
     else{
-       user_id = decoded.user_idx;
+            res.status(403).send({
+                message : "no token"
+            }); 
+        return;
     }
     
     try{

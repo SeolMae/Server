@@ -77,9 +77,18 @@ router.post('/', async function(req, res){
         return;
     }
     else{
-        if(decoded == -1){
-            res.status(500).send({
-                mesasge : "Token Error"
+        if(token)
+        {
+            if(decoded == -1){
+                res.status(500).send({
+                    mesasge : "Token Error"
+                }); 
+                return; 
+            }
+        } 
+        else{
+            res.status(403).send({
+                mesasge : "No token"
             }); 
             return; 
         }

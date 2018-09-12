@@ -5,13 +5,14 @@ const moment = require('moment');
 const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt.js');
 
+const upload = require('../../config/multer.js');
+
 router.get('/:board_idx', async function(req, res){
     let board_idx = req.params.board_idx; 
-    let token;
+    let token=req.headers.token; 
     let user_user_idx; //접속되어 있는 유저
 
     if(token){
-        token = req.headers.token; 
 
         let decoded = jwt.verify(token);
     
@@ -22,7 +23,12 @@ router.get('/:board_idx', async function(req, res){
         }
         user_user_idx = decoded.user_idx;
     }
-
+    else{
+            res.status(403).send({
+                message : "no token"
+            }); 
+        return;
+    }
     let user_name;
     let user_img;
 
