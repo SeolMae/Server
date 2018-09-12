@@ -104,7 +104,7 @@ router.post('/',upload.single('board_img'), async function(req, res){
     let usr_name=req.body.usr_name;
 
     if(!req.file || !board_title  || !board_desc  || !hal_idx || !usr_name){ //값이 없을 때
-        res.status(400).send({
+        res.status(403).send({
             message : "Null Value"
         }); 
         return;

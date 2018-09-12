@@ -63,17 +63,17 @@ router.post('/', async(req, res, next) => {
     let checkidQuery =
     `
     SELECT * FROM user
-    WHERE id = ?
+    WHERE usr_id = ?
     `;
 
     let insertQuery =
     `
-    INSERT INTO user (id, nickname, img_url, fcmToken)
+    INSERT INTO user (usr_id, usr_name, usr_img, usr_fcmToken)
     VALUES (?, ?, ?, ?);
     `;
     let updateToken =
     `
-    UPDATE user SET fcmToken = ? WHERE id = ?;
+    UPDATE user SET usr_fcmToken = ? WHERE usr_id = ?;
     `;
 
     if(chkToken != undefined){ // 토큰이 이미 있는 경우 (로그인 되어있는 경우)
@@ -84,6 +84,7 @@ router.post('/', async(req, res, next) => {
         res.status(201).send({
           data : {
             id : id,
+            flag : 0,
             token : token
           },
           message : "success"
@@ -94,6 +95,7 @@ router.post('/', async(req, res, next) => {
         res.status(201).send({
           data : {
             id : id,
+            flag : 0,
             token : token
           },
           message : "success"
@@ -111,6 +113,7 @@ router.post('/', async(req, res, next) => {
         res.status(201).send({
           data : {
             id : id,
+            flag : 0,
             token : token
           },
           message : "success"
@@ -125,6 +128,8 @@ router.post('/', async(req, res, next) => {
         res.status(201).send({
           data : {
             id : id,
+            nickname : nickname,
+            flag : 1,
             token : token
           },
           message : "success"

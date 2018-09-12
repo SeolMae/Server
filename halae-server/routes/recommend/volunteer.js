@@ -42,9 +42,9 @@ router.get('/', async function(req, res){
 
     for(var i=0;i<selectBoardResult.length;i++){
         let data_res = {
-            board_idx : selectOneBoardResult[0].board_idx,
-            board_title : selectOneBoardResult[0].board_title,
-            board_img : selectOneBoardResult[0].board_img
+            board_idx : selectBoardResult[0].board_idx,
+            board_title : selectBoardResult[0].board_title,
+            board_img : selectBoardResult[0].board_img
         }
         board_list.push(data_res);
     }
