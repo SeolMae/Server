@@ -20,6 +20,7 @@ router.get('/:board_idx', async function(req, res){
             res.status(500).send({
                 message : "Token error"
             }); 
+            return;
         }
         user_user_idx = decoded.user_idx;
     }
@@ -40,6 +41,7 @@ router.get('/:board_idx', async function(req, res){
         res.status(400).send({
             message : "Null Value"
         }); 
+        return;
     }
     else {
         let selectOneBoardQuery = 'SELECT * FROM HalAe.board WHERE board_idx = ?'; 
@@ -107,7 +109,6 @@ router.post('/',upload.single('board_img'), async function(req, res){
     let board_title = req.body.board_title;
     let board_desc=req.body.board_desc;
     let hal_idx=req.body.hal_idx;
-    let usr_name=req.body.usr_name;
 
     if(!req.file || !board_title  || !board_desc  || !hal_idx || !usr_name){ //값이 없을 때
         res.status(403).send({
@@ -115,7 +116,50 @@ router.post('/',upload.single('board_img'), async function(req, res){
         }); 
         return;
     }
-   
+    board_img = req.file.location;
+    let token=req.headers.token; 
+    let user_user_idx; //접속되어 있는 유저
+
+    if(token){
+
+        let decoded = jwt.verify(token);
+    
+        if (decoded == -1){
+            res.status(500).send({
+                message : "Token error"
+            }); 
+            return;
+        }
+        user_user_idx = decoded.user_idx;
+    }
+    else{
+            res.status(403).send({
+                message : "no token"
+            }); 
+        return;
+    }
+    //글쓴이 이름 가지고 오기
+    let getUserId = 'SELECT * FROM HalAe.user WHERE usr_id = ?'; 
+    let getUserIdRes = await db.queryParam_Arr(getUserId, [user_user_idx]);
+
+    if(!getUserIdRes){
+        res.status(500).send({
+            message : "Internal Server Error3"
+        });
+        return;
+    }
+    user_name = getUserIdRes[0].usr_name; 
+
+    //게시물 등록하기
+    let insertCommentQuery = 'INSERT INTO HalAe.board (board_usr, board_hal, board_title, board_img, board_time, board_text) VALUES(?, ?, ?, ?, ?, ?)'; 
+    let insertCommentRes = await db.queryParam_Arr(insertCommentQuery, [ user_name ,hal_idx, board_title, board_img, moment() ,board_desc]);
+    if(!insertCommentRes){
+        res.status(500).send({
+            mesasge : "Internal Server Error"
+        });
+        return;
+    }
+
     res.status(201).send({
         message : "Successfully register board"
     }); 

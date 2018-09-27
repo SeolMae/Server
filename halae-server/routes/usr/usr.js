@@ -5,8 +5,7 @@ const moment = require('moment');
 const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt.js');
 
-router.get('/', async function(req, res){
-    let board_idx = req.params.board_idx; 
+router.get('/', async function(req, res){ 
     let token=req.headers.token; 
     let user_user_idx; //접속되어 있는 유저
 
@@ -27,10 +26,11 @@ router.get('/', async function(req, res){
             }); 
         return;
     }
+    let user_user_idx='a';
 
     let checkLikeInBoard = 'select usr_name, usr_img from HalAe.user where usr_id = ?'; 
     let checkLikeInBoardRes = await db.queryParam_Arr(checkLikeInBoard, [user_user_idx]); 
-
+    
     if(!checkLikeInBoardRes){
         res.status(500).send({
             message : "Internal Server Error"

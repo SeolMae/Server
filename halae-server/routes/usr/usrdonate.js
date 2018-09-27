@@ -63,7 +63,7 @@ router.get('/', async (req, res) => {
         res.status(201).send({
             "message" : "Successfully get usr_donate", 
             money_total : money_sum,
-            data : usrhalResultData_res,
+            data : usrhalResultData_res
         }); 
 
     }catch(err){
