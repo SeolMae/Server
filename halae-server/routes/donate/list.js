@@ -20,7 +20,6 @@ router.get('/:align', async(req, res) => {
       }
 
       try{
-
         console.log(req.params.align);
 
         let donatelistResult = [];
@@ -63,8 +62,8 @@ router.get('/:align', async(req, res) => {
         let tempObj = {};
 
         for(let i=0; i<donate_Result.length; i++){
+            tempObj.don_idx = donate_Result[i].don_idx;
             tempObj.don_title = donate_Result[i].don_title;
-            tempObj.don_text = donate_Result[i].don_text;
             //date.datechange(schedule_Result[0].vol_date)
             tempObj.start_date = date.datechange(donate_Result[i].start_date);
             tempObj.finish_date = date.datechange(donate_Result[i].finish_date);
@@ -76,7 +75,6 @@ router.get('/:align', async(req, res) => {
 
             tempObj.hal_name = halmateinfo[i].hal_name;
             tempObj.hal_img = halmateinfo[i].hal_img;
-            tempObj.hal_gender = halmateinfo[i].hal_gender;
             tempObj.hal_age = halmateinfo[i].hal_age;
 
             donatelistResult.push(tempObj);

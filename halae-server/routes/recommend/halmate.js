@@ -66,6 +66,8 @@ router.get('/', async function(req, res){
         }
 
         let data_res = {
+            
+            hal_img : gethalmateResult[i].hal_img,
             hal_idx : gethalmateResult[i].hal_idx,
             hal_name : gethalmateResult[i].hal_name,
             hal_age : gethalmateResult[i].hal_age,

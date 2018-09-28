@@ -68,13 +68,13 @@ router.post('/', async(req, res, next) => {
 
     let insertQuery =
     `
-    INSERT INTO user (usr_id, usr_name, usr_img, usr_fcmToken)
-    VALUES (?, ?, ?, ?);
+    INSERT INTO user (usr_id, usr_name, usr_img)
+    VALUES (?, ?, ?);
     `;
-    let updateToken =
+    /*let updateToken =
     `
     UPDATE user SET usr_fcmToken = ? WHERE usr_id = ?;
-    `;
+    `;*/
 
     if(chkToken != undefined){ // 토큰이 이미 있는 경우 (로그인 되어있는 경우)
       console.log("토큰이 있습니다");
@@ -106,7 +106,7 @@ router.post('/', async(req, res, next) => {
 
       if(checkid.length != 0){ // 기기를 변경했을 경우
         // fcm token update
-        let updatefcmToken = await db.queryParamCnt_Arr(updateToken, [fcmToken, id]);
+        //let updatefcmToken = await db.queryParamCnt_Arr(updateToken, [fcmToken, id]);
 
         console.log("다른기기에서 접속했습니다");
         token = jwt.sign(id);
@@ -121,10 +121,10 @@ router.post('/', async(req, res, next) => {
       } else{ // 다른 기기이고 회원이 아닐때
         console.log("비회원입니다.")
 
-        let insertResult = await db.queryParamCnt_Arr(insertQuery,[id, nickname ,img_url, fcmToken]);
-
+        let insertResult = await db.queryParamCnt_Arr(insertQuery,[id, nickname ,img_url]);
+        
         token = jwt.sign(id);
-
+        console.log(token);
         res.status(201).send({
           data : {
             id : id,
