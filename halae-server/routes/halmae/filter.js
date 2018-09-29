@@ -7,17 +7,65 @@ const db = require('../../module/pool.js');
 
 router.post('/', async(req, res)=> {
 
+    if(!(req.body.hal_gender && req.body.hal_interest && req.body.hal_address)){ //전부 없을때
+        let filterResultData = [];
+        let tempObj = {};
 
-    if(!(req.body.hal_gender && req.body.hal_interest && req.body.hal_address)){
+        let filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate ORDER BY RAND() LIMIT 6';
+        let filteringResult = await db.queryParam_None(filteringQuery);
+        
+        let h, k;
+        for(h=0; h<filteringResult.length; h++){
+            
+                tempObj = {};
+                tempObj.hal_idx = filteringResult[h].hal_idx;
+                tempObj.hal_name = filteringResult[h].hal_name;
+                tempObj.hal_age = filteringResult[h].hal_age;
+                tempObj.hal_gender = filteringResult[h].hal_gender;
+                tempObj.hal_address = filteringResult[h].hal_address;
+                tempObj.hal_img = filteringResult[h].hal_img;
+                filterResultData.push(tempObj);
+        }
+
+        console.log(filterResultData);
+
+        
+        let getinterestQuery = 'SELECT inter_idx FROM HalAe.halmate_inter WHERE hal_idx = ?';
+        let getintertextQuery = 'SElECT inter_text FROM HalAe.interest WHERE inter_idx = ?';
+
+        let inter_idxArry;
+        let inter_textArry;
+        let intertempObj;
+        for(let n = 0; n<filterResultData.length; n++){
+            inter_idxArry = await db.queryParam_Arr(getinterestQuery, filterResultData[n].hal_idx);
+            filterResultData[n].interestArry = [];
+            for(let m=0; m<inter_idxArry.length; m++){
+                inter_textArry =  await db.queryParam_Arr(getintertextQuery, inter_idxArry[m].inter_idx); 
+                console.log(inter_textArry);
+
+                filterResultData[n].interestArry.push(inter_textArry[0].inter_text);
+                
+            }
+        }
+
+        console.log(filterResultData);
+
+        res.status(201).send({
+            "message" : "get halmate schedule information Success",
+            result : filterResultData
+        });
+        return;
+    }
+    if(!(req.body.hal_gender || req.body.hal_interest || req.body.hal_address)){
         res.status(403).send({
             "message" : "please input halmate's gender, interest, and address"
         });
         
         return;
     }
-
-    try{
-
+    
+    else{
+        try{
         console.log(req.body);
 
         let filterResultData = [];
@@ -121,6 +169,7 @@ router.post('/', async(req, res)=> {
         res.status(500).send({
             "message" : "Internal Server error"
         });
+    }
     }
 })
 
