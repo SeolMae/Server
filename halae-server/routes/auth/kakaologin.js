@@ -25,6 +25,7 @@ router.post('/', async(req, res, next) => {
 
     return;
   }
+  console.log(accessToken);
   // // push 알람 클라이언트 토큰
   // let fcmToken = req.body.fcmToken;
 
@@ -52,12 +53,12 @@ router.post('/', async(req, res, next) => {
     var token;
 
     var chkToken;
-    if(req.headers.authorization != undefined){
-      chkToken = jwt.verify(req.headers.authorization);
+    if(req.headers.token!= undefined){
+      chkToken = jwt.verify(req.headers.token);
     }
 
     // console.log()
-    // console.log(chkToken);
+    console.log(chkToken);
     // console.log(jwt.verify(chkToken));
 
     let checkidQuery =
