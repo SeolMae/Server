@@ -77,7 +77,7 @@ router.post('/', async(req, res, next) => {
     UPDATE user SET usr_fcmToken = ? WHERE usr_id = ?;
     `;*/
 
-    if(chkToken != undefined){ // 토큰이 이미 있는 경우 (로그인 되어있는 경우)
+    /*if(chkToken != undefined){ // 토큰이 이미 있는 경우 (로그인 되어있는 경우)
       console.log("토큰이 있습니다");
       if(chkToken.id == id){
         console.log("성공적으로 로그인 되었습니다");
@@ -102,7 +102,7 @@ router.post('/', async(req, res, next) => {
           message : "success"
         })
       }
-    } else{ // 토큰이 없는 경우
+    } else{ // 토큰이 없는 경우*/
       let checkid = await db.queryParamCnt_Arr(checkidQuery,[id]);
 
       if(checkid.length != 0){ // 기기를 변경했을 경우
@@ -137,7 +137,7 @@ router.post('/', async(req, res, next) => {
         })
       }
     }
-  }
+  //}
   catch(err) {
     console.log("kakao Error => " + err);
     next(err);
