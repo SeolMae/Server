@@ -26,7 +26,6 @@ router.get('/', async function(req, res){
             }); 
         return;
     }
-    let user_user_idx='a';
 
     let checkLikeInBoard = 'select usr_name, usr_img from HalAe.user where usr_id = ?'; 
     let checkLikeInBoardRes = await db.queryParam_Arr(checkLikeInBoard, [user_user_idx]); 

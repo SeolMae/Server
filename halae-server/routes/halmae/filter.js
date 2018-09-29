@@ -13,7 +13,7 @@ router.post('/', async(req, res)=> {
 
         let filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate ORDER BY RAND() LIMIT 6';
         let filteringResult = await db.queryParam_None(filteringQuery);
-        
+        console.log(filteringResult);
         let h, k;
         for(h=0; h<filteringResult.length; h++){
             
