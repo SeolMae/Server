@@ -7,7 +7,7 @@ const db = require('../../module/pool.js');
 
 router.post('/', async(req, res)=> {
 
-    if(!(req.body.hal_gender && req.body.hal_interest && req.body.hal_address)){ //전부 없을때
+    if(!(req.body.hal_gender || req.body.hal_interest || req.body.hal_address)){ //전부 없을때
         let filterResultData = [];
         let tempObj = {};
 
@@ -56,15 +56,8 @@ router.post('/', async(req, res)=> {
         });
         return;
     }
-    if(!(req.body.hal_gender || req.body.hal_interest || req.body.hal_address)){
-        res.status(403).send({
-            "message" : "please input halmate's gender, interest, and address"
-        });
-        
-        return;
-    }
     
-    else{
+    else if((req.body.hal_gender && req.body.hal_interest && req.body.hal_address)){
         try{
         console.log(req.body);
 
@@ -169,7 +162,16 @@ router.post('/', async(req, res)=> {
         res.status(500).send({
             "message" : "Internal Server error"
         });
+        return;
     }
+    }
+    
+    else{
+        res.status(403).send({
+            "message" : "please input halmate's gender, interest, and address"
+        });
+        
+        return;
     }
 })
 
