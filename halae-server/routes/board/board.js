@@ -110,7 +110,7 @@ router.post('/',upload.single('board_img'), async function(req, res){
     let board_desc=req.body.board_desc;
     let hal_idx=req.body.hal_idx;
 
-    if(!req.file || !board_title  || !board_desc  || !hal_idx || !usr_name){ //값이 없을 때
+    if(!req.file || !board_title  || !board_desc  || !hal_idx ){ //값이 없을 때
         res.status(403).send({
             message : "Null Value"
         }); 
@@ -141,7 +141,7 @@ router.post('/',upload.single('board_img'), async function(req, res){
     //글쓴이 이름 가지고 오기
     let getUserId = 'SELECT * FROM HalAe.user WHERE usr_id = ?'; 
     let getUserIdRes = await db.queryParam_Arr(getUserId, [user_user_idx]);
-
+    
     if(!getUserIdRes){
         res.status(500).send({
             message : "Internal Server Error3"
@@ -149,10 +149,10 @@ router.post('/',upload.single('board_img'), async function(req, res){
         return;
     }
     user_name = getUserIdRes[0].usr_name; 
-
+    console.log(user_name);
     //게시물 등록하기
-    let insertCommentQuery = 'INSERT INTO HalAe.board (board_usr, board_hal, board_title, board_img, board_time, board_text) VALUES(?, ?, ?, ?, ?, ?)'; 
-    let insertCommentRes = await db.queryParam_Arr(insertCommentQuery, [ user_name ,hal_idx, board_title, board_img, moment() ,board_desc]);
+    let insertCommentQuery = 'INSERT INTO HalAe.board (board_usr, board_name, board_hal, board_title, board_img, board_time, board_text) VALUES(?, ?,?, ?, ?, ?, ?)'; 
+    let insertCommentRes = await db.queryParam_Arr(insertCommentQuery, [ user_name , user_user_idx, hal_idx, board_title, board_img, new moment().format("yyyy-mm-dd hh:mm:ss") ,board_desc]);
     if(!insertCommentRes){
         res.status(500).send({
             mesasge : "Internal Server Error"
