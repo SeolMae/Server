@@ -9,9 +9,9 @@ const date = require('../../module/moment.js');
 
 // //마감임박순 모금액 적은 순 모금액 많은 순 최신순
 
-router.post('/', async(req, res) => {
+router.get('/:align', async(req, res) => {
 
-    if(!req.body.align){
+    if(!req.params.align){
         res.status(403).send({
             "message" : "please input align"
         });
@@ -21,7 +21,7 @@ router.post('/', async(req, res) => {
 
       try{
 
-        console.log(req.body.align);
+        console.log(req.params.align);
 
         let donatelistResult = [];
         let donate_Result;
@@ -29,14 +29,14 @@ router.post('/', async(req, res) => {
 
         //기부 타이틀, 할머니 이름,나이,사진,성별, 모금 목표금액, 현재금액, 종료일 
         
-        if(req.body.align == '마감임박순'){
+        if(req.params.align == '마감임박순'){
             console.log(req.params.align);
             getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY finish_date ASC';
 
-        }else if(req.body.align == '모금액적은순'){
+        }else if(req.params.align == '모금액적은순'){
             getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY goal_money ASC ';
 
-        }else if(req.body.align == '모금액많은순'){
+        }else if(req.params.align == '모금액많은순'){
             getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY goal_money DESC ';
 
         }else{
