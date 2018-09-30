@@ -7,6 +7,7 @@ module.exports = {
 
     try {
       var connection = await pool.getConnection();
+      
       result = await connection.query(query) || null; 
     }catch(err){
       next(err); 
@@ -24,6 +25,7 @@ module.exports = {
 
     try {
       var connection = await pool.getConnection();
+      console.log(connection);
       result = await connection.query(query, value) || null; 
     }catch(err){
       next(err); 
