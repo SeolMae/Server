@@ -23,7 +23,7 @@ router.get('/:hal_idx', async(req, res) =>{
 
         let scheResultData = [];
 
-        let getsche_Query = 'SELECT usr_id, vol_date FROM HalAe.volunteer WHERE hal_idx = ?'
+        let getsche_Query = 'SELECT usr_name, vol_date, vol_starttime, vol_endtime FROM HalAe.volunteer WHERE hal_idx = ? order by vol_date asc'
         let schedule_Result = await db.queryParam_Arr(getsche_Query, [req.params.hal_idx]);
         
         console.log(schedule_Result);
@@ -35,13 +35,18 @@ router.get('/:hal_idx', async(req, res) =>{
             });
             return;
         }
-        
+        /*let result=[];
+        for(let l=0;l<schedule_Result.length;l++){
+            var op={};
+            voldatearry.push(date.datechange(schedule_Result[l].vol_date));
+        }*/
         var tempcheck = 0;
-        let voldatearry = [];
-        voldatearry.push(date.datechange(schedule_Result[0].vol_date));
-
+        /*let voldatearry = [];
+        for(let l=0;l<schedule_Result.length;l++){
+            voldatearry.push(date.datechange(schedule_Result[l].vol_date));
+        }*/
         //-----------------------봉사자가 있는 날짜 정리------------------------------
-        for(let i=1;i<schedule_Result.length;i++){
+        /*for(let i=1;i<schedule_Result.length;i++){
             
             for(let j=0;j<voldatearry.length;j++){
                 if((date.datechange(schedule_Result[i].vol_date)) != voldatearry[j]){
@@ -82,11 +87,12 @@ router.get('/:hal_idx', async(req, res) =>{
             scheResultData.push(tempObj);
         }       
 
-        console.log(scheResultData);
+        console.log(scheResultData);*/
+
 
         res.status(201).send({
             "message" : "get halmate schedule information Success",
-            result : scheResultData
+            result : schedule_Result
           });
       
 

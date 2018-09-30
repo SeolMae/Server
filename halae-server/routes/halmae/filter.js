@@ -64,9 +64,13 @@ router.post('/', async(req, res)=> {
         let filterResultData = [];
         let interestArry = [];
         let tempObj = {};
+        
+        let address="%";
+        address=address.concat(req.body.hal_address);
+        address=address.concat("%");
 
-        let filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate WHERE hal_gender = ? and hal_address = ?';
-        let filteringResult = await db.queryParam_Arr(filteringQuery, [req.body.hal_gender, req.body.hal_address]);
+        let filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate WHERE hal_gender = ? and hal_address LIKE ?';
+        let filteringResult = await db.queryParam_Arr(filteringQuery, [req.body.hal_gender,address ]);
         console.log(filteringResult);
 
         let gethal_idxQuery = 'SELECT hal_idx FROM HalAe.halmate_inter WHERE inter_idx = (SELECT inter_idx FROM HalAe.interest WHERE inter_text = ?)';

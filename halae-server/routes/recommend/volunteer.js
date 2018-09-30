@@ -6,11 +6,10 @@ const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt.js');
 
 router.get('/', async function(req, res){
-    let token;
+    let token=req.headers.token; 
     let user_user_idx; //접속되어 있는 유저
 
     if(token){
-        token = req.headers.token; 
 
         let decoded = jwt.verify(token);
     
@@ -20,6 +19,12 @@ router.get('/', async function(req, res){
             }); 
         }
         user_user_idx = decoded.user_idx;
+    }
+    else{
+            res.status(403).send({
+                message : "no token"
+            }); 
+        return;
     }
 
     let user_name;
@@ -39,7 +44,7 @@ router.get('/', async function(req, res){
     //게시글 가져오기
     let selectBoardQuery = 'SELECT * FROM HalAe.board order by rand() limit 2'; 
     let selectBoardResult = await db.queryParam_None(selectBoardQuery); 
-
+    let board_list=[];
     for(var i=0;i<selectBoardResult.length;i++){
         let data_res = {
             board_idx : selectBoardResult[0].board_idx,

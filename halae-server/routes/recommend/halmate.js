@@ -6,12 +6,10 @@ const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt.js');
 
 router.get('/', async function(req, res){
-
-    let token;
+    let token=req.headers.token; 
     let user_user_idx; //접속되어 있는 유저
 
     if(token){
-        token = req.headers.token; 
 
         let decoded = jwt.verify(token);
     
@@ -21,6 +19,12 @@ router.get('/', async function(req, res){
             }); 
         }
         user_user_idx = decoded.user_idx;
+    }
+    else{
+            res.status(403).send({
+                message : "no token"
+            }); 
+        return;
     }
 
     //유저의 주소 가져오기
@@ -36,11 +40,17 @@ router.get('/', async function(req, res){
     else{
         address = getUserAddressResult[0].usr_address;
     }
+    
     let trim_address=address.split(' ');
     let str_address=trim_address[0].concat(" ",trim_address[1]);
-    
+    str_address=trim_address[1];
+    console.log(str_address);
+    let address_="%";
+        address_=address.concat(str_address);
+        address_=address.concat("%");
     let gethalmateQuery='SELECT * from HalAe.halmate WHERE (SELECT SUBSTRING_INDEX(hal_address, \' \', 2) FROM HalAe.halmate) = ?';
-    let gethalmateResult = await db.queryParam_Arr(gethalmateQuery, [str_address]);
+    gethalmateQuery='SELECT * from HalAe.halmate WHERE hal_address LIKE ?';
+    let gethalmateResult = await db.queryParam_Arr(gethalmateQuery, [address_]);
     
     if(!gethalmateResult){
         res.status(500).send({
@@ -48,20 +58,20 @@ router.get('/', async function(req, res){
         });
         return;
     }
-
+    let board_list=[];
     for(var i=0;i<2;i++){
         let gethalmateQuery='select inter_text from HalAe.interest where inter_idx in (SELECT inter_idx from HalAe.halmate_inter WHERE hal_idx = ?)';
-        let gethalmateResult = await db.queryParam_Arr(gethalmateQuery, [gethalmateResult[i].hal_idx]);
+        let gethalmateinterResult = await db.queryParam_Arr(gethalmateQuery, [gethalmateResult[i].hal_idx]);
     
         let inter_list = [];
-        if(!gethalmateResult){
+        if(!gethalmateinterResult){
                 res.status(500).send({
                 message : "Internal Server Error"
             });
             return;
         }else {
-            for(var j=0;j<gethalmateResult.length;j++){
-                inter_list.push(gethalmateResult[j].inter_text);
+            for(var j=0;j<gethalmateinterResult.length;j++){
+                inter_list.push(gethalmateinterResult[j].inter_text);
             }
         }
 
