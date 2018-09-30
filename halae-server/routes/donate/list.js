@@ -67,15 +67,28 @@ router.get('/:align', async(req, res) => {
             //date.datechange(schedule_Result[0].vol_date)
             tempObj.start_date = date.datechange(donate_Result[i].start_date);
             tempObj.finish_date = date.datechange(donate_Result[i].finish_date);
+            /*var _date1=tempObj.start_date;
+            var _date2=tempObj.finish_date;
+            var diffDate_1 = _date1 instanceof Date ? _date1 : new Date(_date1);
+    var diffDate_2 = _date2 instanceof Date ? _date2 : new Date(_date2);
+ 
+    diffDate_1 = new Date(diffDate_1.getFullYear(), diffDate_1.getMonth()+1, diffDate_1.getDate());
+    diffDate_2 = new Date(diffDate_2.getFullYear(), diffDate_2.getMonth()+1, diffDate_2.getDate());
+ 
+    var diff = Math.abs(diffDate_2.getTime() - diffDate_1.getTime());
+    diff = Math.ceil(diff / (1000 * 3600 * 24));
+
+            console.log(diff);*/
             tempObj.goal_money = donate_Result[i].goal_money;
             tempObj.now_money = donate_Result[i].now_money;
 
             halmateinfo = await db.queryParam_Arr(gethalmateinfoQuery, donate_Result[i].hal_idx);
             console.log(halmateinfo);
 
-            tempObj.hal_name = halmateinfo[i].hal_name;
-            tempObj.hal_img = halmateinfo[i].hal_img;
-            tempObj.hal_age = halmateinfo[i].hal_age;
+            tempObj.hal_name = halmateinfo[0].hal_name;
+            tempObj.hal_img = halmateinfo[0].hal_img;
+            tempObj.hal_age = halmateinfo[0].hal_age;
+            tempObj.hal_gender = halmateinfo[0].hal_gender;
 
             donatelistResult.push(tempObj);
         }

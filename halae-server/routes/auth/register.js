@@ -35,11 +35,11 @@ router.post('/', async function(req, res){
     `
     UPDATE user SET usr_name =? and usr_age = ? and usr_phone = ? where usr_id = ?;
     `;
-    let updatefcmToken = await db.queryParamCnt_Arr(updateToken, [name, age, phone, user_user_idx]);
+    let updatefcmToken = await db.queryParam_Arr(updateToken, [name, age, phone, user_user_idx]);
 
         res.status(201).send({
           data : {
-            id : id,
+            id : user_user_idx,
             token : token
           },
           message : "Successfully register user's info"

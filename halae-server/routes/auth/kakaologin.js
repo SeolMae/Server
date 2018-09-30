@@ -40,7 +40,7 @@ router.post('/', async(req, res, next) => {
 
   try {
     let kakaoResult = await request(option);
-
+    console.log(kakaoResult);
     let result = {};
     result.nickname = kakaoResult.properties.nickname;
     result.thumbnail_image = kakaoResult.properties.thumbnail_image;
@@ -52,13 +52,13 @@ router.post('/', async(req, res, next) => {
     var id = kakaoResult.id;
     var token;
 
-    var chkToken;
+    /*var chkToken;
     if(req.headers.token!= undefined){
       chkToken = jwt.verify(req.headers.token);
     }
 
     // console.log()
-    console.log(chkToken);
+    console.log(chkToken);*/
     // console.log(jwt.verify(chkToken));
 
     let checkidQuery =
@@ -103,7 +103,7 @@ router.post('/', async(req, res, next) => {
         })
       }
     } else{ // 토큰이 없는 경우*/
-      let checkid = await db.queryParamCnt_Arr(checkidQuery,[id]);
+      let checkid = await db.queryParam_Arr(checkidQuery,[id]);
 
       if(checkid.length != 0){ // 기기를 변경했을 경우
         // fcm token update
@@ -122,7 +122,7 @@ router.post('/', async(req, res, next) => {
       } else{ // 다른 기기이고 회원이 아닐때
         console.log("비회원입니다.")
 
-        let insertResult = await db.queryParamCnt_Arr(insertQuery,[id, nickname ,img_url]);
+        let insertResult = await db.queryParam_Arr(insertQuery,[id, nickname ,img_url]);
         
         token = jwt.sign(id);
         console.log(token);
