@@ -26,6 +26,7 @@ module.exports = {
     try {
       var connection = await pool.getConnection();
       console.log(connection);
+      console.log("sdfs");
       result = await connection.query(query, value) || null; 
     }catch(err){
       next(err); 
