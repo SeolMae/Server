@@ -5,6 +5,7 @@ const moment = require('moment');
 const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt.js');
 
+
 //유저 스케쥴 등록
 router.post('/', async (req, res) => {
 
@@ -24,7 +25,7 @@ router.post('/', async (req, res) => {
     }
     
     try{
-        let vol_date = req.body.date;
+        let vol_date = moment().format();
         let vol_hal_idx=req.body.hal_idx;
         let vol_start_time = req.body.start_time;
         let vol_end_time = req.body.end_time;

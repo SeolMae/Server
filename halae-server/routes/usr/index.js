@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-
 router.use('/', require('./usr.js'));
 router.use('/halmae', require('./usrhalmae.js'));
 router.use('/schedule', require('./usrschedule.js'));

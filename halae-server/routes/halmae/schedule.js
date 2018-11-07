@@ -2,10 +2,10 @@
 var express = require('express');
 var router = express.Router();
 const async = require('async');
-var moment = require('moment');
 
+const moment = require('moment');
 const db = require('../../module/pool.js');
-const date = require('../../module/moment.js');
+const date_moment = require('../../module/moment.js');
 
 //volunteer 테이블에서 usr_id, vol_date
 
@@ -20,10 +20,8 @@ router.get('/:hal_idx', async(req, res) =>{
       }
     
     try{
-
-        let scheResultData = [];
-
-        let getsche_Query = 'SELECT usr_name, vol_date, vol_starttime, vol_endtime FROM HalAe.volunteer WHERE hal_idx = ? order by vol_date asc'
+        console.log(req.params.hal_idx);
+        let getsche_Query = 'SELECT usr_name, vol_date, vol_starttime, vol_endtime FROM HalAe.volunteer WHERE hal_idx = 1 order by vol_date asc'
         let schedule_Result = await db.queryParam_Arr(getsche_Query, [req.params.hal_idx]);
         
         console.log(schedule_Result);
@@ -35,12 +33,34 @@ router.get('/:hal_idx', async(req, res) =>{
             });
             return;
         }
+        let result_data=[];
+        var result_byday ={};
+        var result_daysch=[];
+        var result_onesch={};
+        var date = date_moment.date_no_change(schedule_Result[0].vol_date);
+
+        for(var i=0;i<schedule_Result.length ; i++){
+            result_onesch={};
+            result_onesch.usr_name = schedule_Result[i].usr_name;
+            result_onesch.starttime=schedule_Result[i].vol_starttime;
+            result_onesch.endtime = schedule_Result[i].vol_endtime;
+            console.log(moment(date,'YYYY-MM-DD').diff(schedule_Result[i].vol_date,'day'))
+            if(moment(date,'YYYY-MM-DD').diff(schedule_Result[i].vol_date,'day')!=0){//이전 것과 날짜가 다를 때
+                result_byday.date=date_moment.date_no_change(date);
+                result_byday.sch=result_daysch;
+                result_data.push(result_byday);
+                result_byday={};
+                result_daysch=[];
+            }
+                result_daysch.push(result_onesch);
+            date = date_moment.date_no_change(schedule_Result[i].vol_date);
+        }
         /*let result=[];
         for(let l=0;l<schedule_Result.length;l++){
             var op={};
             voldatearry.push(date.datechange(schedule_Result[l].vol_date));
         }*/
-        var tempcheck = 0;
+        //var tempcheck = 0;
         /*let voldatearry = [];
         for(let l=0;l<schedule_Result.length;l++){
             voldatearry.push(date.datechange(schedule_Result[l].vol_date));
@@ -92,7 +112,7 @@ router.get('/:hal_idx', async(req, res) =>{
 
         res.status(201).send({
             "message" : "get halmate schedule information Success",
-            result : schedule_Result
+            data : result_data
           });
       
 

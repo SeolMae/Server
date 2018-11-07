@@ -28,7 +28,6 @@ router.post('/', async(req, res, next) => {
   console.log(accessToken);
   // // push 알람 클라이언트 토큰
   // let fcmToken = req.body.fcmToken;
-
   let option = {
     method : 'GET',
     uri: 'https://kapi.kakao.com/v2/user/me',
@@ -37,7 +36,6 @@ router.post('/', async(req, res, next) => {
       'Authorization': "Bearer " +  accessToken
     }
   }
-
   try {
     let kakaoResult = await request(option);
     console.log(kakaoResult);
@@ -56,10 +54,7 @@ router.post('/', async(req, res, next) => {
     if(req.headers.token!= undefined){
       chkToken = jwt.verify(req.headers.token);
     }
-
-    // console.log()
     console.log(chkToken);*/
-    // console.log(jwt.verify(chkToken));
 
     let checkidQuery =
     `
@@ -101,8 +96,8 @@ router.post('/', async(req, res, next) => {
           },
           message : "success"
         })
-      }
-    } else{ // 토큰이 없는 경우*/
+      }*/
+    //} else{ // 토큰이 없는 경우*/
       let checkid = await db.queryParam_Arr(checkidQuery,[id]);
 
       if(checkid.length != 0){ // 기기를 변경했을 경우
@@ -111,15 +106,39 @@ router.post('/', async(req, res, next) => {
 
         console.log("다른기기에서 접속했습니다");
         token = jwt.sign(id);
-        res.status(201).send({
+        var chkToken = jwt.verify(token);
+        /*res.status(201).send({
           data : {
             id : id,
             flag : 0,
             token : token
           },
           message : "success"
-        });
-      } else{ // 다른 기기이고 회원이 아닐때
+        });*/
+        if(chkToken.id==checkid[0].usr_id){
+          console.log("성공적으로 로그인 되었습니다");
+          token = jwt.sign(id);
+          res.status(201).send({
+            data : {
+              id : id,
+              flag : 0,
+              token : token
+            },
+            message : "success"
+          });
+        } else { // 토큰이 만료된 경우 재발급
+          console.log("기간이 만료되었습니다. 재발급 합니다");
+          token = jwt.sign(id);
+          res.status(201).send({
+            data : {
+              id : id,
+              flag : 0,
+              token : token
+            },
+            message : "success"
+          });
+        }
+       } else{ // 다른 기기이고 회원이 아닐때
         console.log("비회원입니다.")
 
         let insertResult = await db.queryParam_Arr(insertQuery,[id, nickname ,img_url]);
@@ -136,8 +155,8 @@ router.post('/', async(req, res, next) => {
           message : "success"
         })
       }
-    }
-  //}
+    //}
+  }
   catch(err) {
     console.log("kakao Error => " + err);
     next(err);
