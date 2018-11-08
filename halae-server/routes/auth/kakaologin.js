@@ -50,11 +50,11 @@ router.post('/', async(req, res, next) => {
     var id = kakaoResult.id;
     var token;
 
-    /*var chkToken;
+    var chkToken;
     if(req.headers.token!= undefined){
       chkToken = jwt.verify(req.headers.token);
     }
-    console.log(chkToken);*/
+    console.log(chkToken);
 
     let checkidQuery =
     `
@@ -72,7 +72,7 @@ router.post('/', async(req, res, next) => {
     UPDATE user SET usr_fcmToken = ? WHERE usr_id = ?;
     `;*/
 
-    /*if(chkToken != undefined){ // 토큰이 이미 있는 경우 (로그인 되어있는 경우)
+    if(chkToken != undefined){ // 토큰이 이미 있는 경우 (로그인 되어있는 경우)
       console.log("토큰이 있습니다");
       if(chkToken.id == id){
         console.log("성공적으로 로그인 되었습니다");
@@ -96,8 +96,8 @@ router.post('/', async(req, res, next) => {
           },
           message : "success"
         })
-      }*/
-    //} else{ // 토큰이 없는 경우*/
+      }
+    } else{ // 토큰이 없는 경우*/
       let checkid = await db.queryParam_Arr(checkidQuery,[id]);
 
       if(checkid.length != 0){ // 기기를 변경했을 경우
@@ -107,15 +107,15 @@ router.post('/', async(req, res, next) => {
         console.log("다른기기에서 접속했습니다");
         token = jwt.sign(id);
         var chkToken = jwt.verify(token);
-        /*res.status(201).send({
+        res.status(201).send({
           data : {
             id : id,
             flag : 0,
             token : token
           },
           message : "success"
-        });*/
-        if(chkToken.id==checkid[0].usr_id){
+        });
+        /*if(chkToken.id==checkid[0].usr_id){
           console.log("성공적으로 로그인 되었습니다");
           token = jwt.sign(id);
           res.status(201).send({
@@ -129,6 +129,7 @@ router.post('/', async(req, res, next) => {
         } else { // 토큰이 만료된 경우 재발급
           console.log("기간이 만료되었습니다. 재발급 합니다");
           token = jwt.sign(id);
+          console.log(token)
           res.status(201).send({
             data : {
               id : id,
@@ -137,7 +138,7 @@ router.post('/', async(req, res, next) => {
             },
             message : "success"
           });
-        }
+        }*/
        } else{ // 다른 기기이고 회원이 아닐때
         console.log("비회원입니다.")
 
@@ -155,7 +156,7 @@ router.post('/', async(req, res, next) => {
           message : "success"
         })
       }
-    //}
+    }
   }
   catch(err) {
     console.log("kakao Error => " + err);
