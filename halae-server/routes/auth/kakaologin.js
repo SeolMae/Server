@@ -107,15 +107,15 @@ router.post('/', async(req, res, next) => {
         console.log("다른기기에서 접속했습니다");
         token = jwt.sign(id);
         var chkToken = jwt.verify(token);
-        res.status(201).send({
+        /*res.status(201).send({
           data : {
             id : id,
             flag : 0,
             token : token
           },
           message : "success"
-        });
-        /*if(chkToken.id==checkid[0].usr_id){
+        });*/
+        if(chkToken.id==checkid[0].usr_id){
           console.log("성공적으로 로그인 되었습니다");
           token = jwt.sign(id);
           res.status(201).send({
@@ -138,7 +138,7 @@ router.post('/', async(req, res, next) => {
             },
             message : "success"
           });
-        }*/
+        }
        } else{ // 다른 기기이고 회원이 아닐때
         console.log("비회원입니다.")
 
