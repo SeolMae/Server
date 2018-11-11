@@ -74,13 +74,14 @@ router.get('/', async function(req, res){
                 inter_list.push(gethalmateinterResult[j].inter_text);
             }
         }
-
+        var addarr=gethalmateResult[i].hal_address.split(' ');
         let data_res = {
             
             hal_img : gethalmateResult[i].hal_img,
             hal_idx : gethalmateResult[i].hal_idx,
             hal_name : gethalmateResult[i].hal_name,
             hal_age : gethalmateResult[i].hal_age,
+            hal_address : addarr[0]+" "+addarr[1],
             inter_list : inter_list
         }
         board_list.push(data_res);
