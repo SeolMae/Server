@@ -31,15 +31,15 @@ router.get('/', async (req, res) => {
     
     try{
         //유저의 기부내역
-        let getusrhal_Query = 'SELECT * FROM HalAe.usr_donation where usr_id = ?';
-        let getusrhal_Result = await db.queryParam_Arr(getusrhal_Query, [user_id]);
+        let getusrhal_Query = 'SELECT * FROM HalAe.usr_donation where usr_id = ? order by don_time asc';
+        let getusrhal_Result = await db.queryParam_Arr(getusrhal_Query, [user_user_idx]);
         
         let usrhalResultData_res=[];
         let data_res;
 
         let money_sum =0;
         for(var i=0;i<getusrhal_Result.length;i++){
-            let getusrhalinfo_Query = 'SELECT hal_name, don_idx, don_title FROM HalAe.donation as b, HalAe.halmate as u where b.don_idx = ? and b.hal_idx=u.hal_idx';
+            let getusrhalinfo_Query = 'SELECT hal_name, hal_gender, don_idx, don_title FROM HalAe.donation as b, HalAe.halmate as u where b.don_idx = ? and b.hal_idx=u.hal_idx';
             let getusrhalinfo_Result = await db.queryParam_Arr(getusrhalinfo_Query, [getusrhal_Result[i].don_idx]);
     
             if(!getusrhalinfo_Result){
@@ -51,10 +51,11 @@ router.get('/', async (req, res) => {
             money_sum += getusrhal_Result[i].money;
             data_res={
                 hal_name : getusrhalinfo_Result[0].hal_name,
+                hal_gender : getusrhalinfo_Result[0].hal_gender,
                 don_idx : getusrhalinfo_Result[0].don_idx,
                 don_title : getusrhalinfo_Result[0].don_title,
                 don_money : getusrhal_Result[i].money,
-                don_time : moment(getusrhal_Result[i].time).format("YYYY.MM.DD")
+                don_time : moment(getusrhal_Result[i].don_time).format("YYYY.MM.DD")
             }
             
 

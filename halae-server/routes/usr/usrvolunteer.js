@@ -30,8 +30,8 @@ router.get('/', async (req, res) => {
     }
     
     try{
-        let getusrvol_Query = 'select * from HalAe.volunteer where usr_id = ?';
-        let getusrvol_Result = await db.queryParam_Arr(getusrvol_Query, [user_id]);
+        let getusrvol_Query = 'select * from HalAe.volunteer where usr_id = ? order by vol_date asc';
+        let getusrvol_Result = await db.queryParam_Arr(getusrvol_Query, [user_user_idx]);
         
         if(!getusrvol_Result){
             res.status(500).send({
@@ -43,13 +43,18 @@ router.get('/', async (req, res) => {
         let usrvolData_res=[];
         let usrvolData;
         let vol_sum=0;
-        for(var i=0;i<getusrvol_Result.length;i++){ //봉사내역 추가
-
+        let gethal_Query = 'select * from HalAe.halmate where hal_idx = ?';
+        
+        for(var i=0;i<getusrvol_Result.length;i++){ 
+    
+            let gethal_Result = await db.queryParam_Arr(gethal_Query, [getusrvol_Result[i].hal_idx]);
+            vol_sum = vol_sum + getusrvol_Result[i].vol_totaltime;
+        
             usrvolData={
-                vol_date : vol_date,
-                hal_name : hal_name,
-                vol_time : vol_time,
-                vol_sum : vol_sum
+                vol_date : moment(getusrvol_Result[i].vol_date,"MM-DD"),
+                hal_name : gethal_Result[0].hal_name,
+                hal_gender : gethal_Result[0].hal_gender,
+                vol_time : getusrvol_Result[i].vol_totaltime,
             }
             
             usrvolData_res.push(usrvolData);

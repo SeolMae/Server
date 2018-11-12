@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
         let data_res;
         let current_time = moment();
         for(var i=0;i<getusrhal_Result.length;i++){
-            let getusrhalinfo_Query = 'SELECT hal_idx, hal_img, hal_name, hal_phone FROM HalAe.halmate WHERE hal_idx = ?';
+            let getusrhalinfo_Query = 'SELECT hal_idx, hal_img, hal_name, hal_phone, hal_gender FROM HalAe.halmate WHERE hal_idx = ?';
             let getusrhalinfo_Result = await db.queryParam_Arr(getusrhalinfo_Query, [getusrhal_Result[i].hal_idx]);
     
             if(!getusrhalinfo_Result){
@@ -48,12 +48,12 @@ router.get('/', async (req, res) => {
                 });
                 return;
             }
-            
-            var time = moment(current_time,"YYYY-MM-DD").diff(moment(getusrhal_Result[i].met_time,"YYYY-MM-DD"));
+            var time = moment(current_time,"YYYY-MM-DD").diff(moment(getusrhal_Result[i].met_time,"YYYY-MM-DD"),"days");
             data_res={
                 hal_idx : getusrhalinfo_Result[0].hal_idx,
                 hal_name : getusrhalinfo_Result[0].hal_name,
                 hal_img : getusrhalinfo_Result[0].hal_img,
+                hal_gender : getusrhalinfo_Result[0].hal_gender,
                 hal_phone : getusrhalinfo_Result[0].hal_phone,
                 met_time : time
             }

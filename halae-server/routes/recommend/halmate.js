@@ -81,6 +81,7 @@ router.get('/', async function(req, res){
             hal_idx : gethalmateResult[i].hal_idx,
             hal_name : gethalmateResult[i].hal_name,
             hal_age : gethalmateResult[i].hal_age,
+            hal_gender : gethalmateResult[i].hal_gender,
             hal_address : addarr[0]+" "+addarr[1],
             inter_list : inter_list
         }
