@@ -7,13 +7,12 @@ const db = require('../../module/pool.js');
 
 router.post('/', async(req, res)=> {
 
-    if(!(req.body.hal_gender || req.body.hal_interest || req.body.hal_address)){ //전부 없을때
+    if(req.body.hal_gender == 2 && req.body.hal_interest == "관심분야" && req.body.hal_address == "위치"){ //전부 없을때
         let filterResultData = [];
         let tempObj = {};
 
         let filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate ORDER BY RAND() LIMIT 6';
         let filteringResult = await db.queryParam_None(filteringQuery);
-        console.log(filteringResult);
         let h, k;
         for(h=0; h<filteringResult.length; h++){
             
@@ -26,8 +25,6 @@ router.post('/', async(req, res)=> {
                 tempObj.hal_img = filteringResult[h].hal_img;
                 filterResultData.push(tempObj);
         }
-
-        console.log(filterResultData);
 
         
         let getinterestQuery = 'SELECT inter_idx FROM HalAe.halmate_inter WHERE hal_idx = ?';
@@ -47,9 +44,6 @@ router.post('/', async(req, res)=> {
                 
             }
         }
-
-        console.log(filterResultData);
-
         res.status(201).send({
             "message" : "get halmate schedule information Success",
             result : filterResultData
@@ -57,7 +51,7 @@ router.post('/', async(req, res)=> {
         return;
     }
     
-    else if((req.body.hal_gender && req.body.hal_interest && req.body.hal_address)){
+    else if((req.body.hal_gender && req.body.hal_interest && req.body.hal_address)){ //
         try{
         console.log(req.body);
 
@@ -65,19 +59,31 @@ router.post('/', async(req, res)=> {
         let interestArry = [];
         let tempObj = {};
         
-        let address="%";
-        address=address.concat(req.body.hal_address);
-        address=address.concat("%");
-
-        let filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate WHERE hal_gender = ? and hal_address LIKE ?';
-        let filteringResult = await db.queryParam_Arr(filteringQuery, [req.body.hal_gender,address ]);
-        console.log(filteringResult);
-
-        let gethal_idxQuery = 'SELECT hal_idx FROM HalAe.halmate_inter WHERE inter_idx = (SELECT inter_idx FROM HalAe.interest WHERE inter_text = ?)';
-        let hal_idxArry = await db.queryParam_Arr(gethal_idxQuery, [req.body.hal_interest]);
-        console.log(hal_idxArry);
-
-        if(!(filteringResult&&hal_idxArry)){
+        let filteringQuery;
+        let filteringResult;
+        if(req.body.hal_gender != 2 && req.body.hal_address !="위치"){
+            let address="%";
+            address=address.concat(req.body.hal_address);
+            address=address.concat("%");
+            
+            filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate WHERE hal_gender = ? and hal_address LIKE ?';
+            filteringResult= await db.queryParam_Arr(filteringQuery, [req.body.hal_gender,address ]);
+        }
+        else if(req.body.hal_gender == 2 && req.body.hal_address !="위치"){
+            let address="%";
+            address=address.concat(req.body.hal_address);
+            address=address.concat("%");
+            
+            filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate WHERE hal_address LIKE ?';
+            filteringResult= await db.queryParam_Arr(filteringQuery, [address]);
+        }
+        else if(req.body.hal_gender != 2 && req.body.hal_address =="위치"){
+            
+            filteringQuery = 'SELECT hal_idx, hal_name, hal_img, hal_gender, hal_age, hal_address FROM HalAe.halmate WHERE hal_gender = ?';
+            filteringResult= await db.queryParam_Arr(filteringQuery, [req.body.hal_gender]);
+        }
+        
+        if(!filteringResult){
             res.status(300).send({
                 "message" : "No data"
               });
@@ -85,17 +91,43 @@ router.post('/', async(req, res)=> {
               return;
 
         }
+        let hal_idxArry;
+        if(req.body.hal_interest != "관심분야"){
+            let gethal_idxQuery = 'SELECT hal_idx FROM HalAe.halmate_inter WHERE inter_idx = (SELECT inter_idx FROM HalAe.interest WHERE inter_text = ?)';
+            hal_idxArry = await db.queryParam_Arr(gethal_idxQuery, [req.body.hal_interest]);
+            console.log(hal_idxArry);
+            if(!hal_idxArry){
+                res.status(300).send({
+                    "message" : "No data"
+                });
+                return;
+            }
+        }
 
         let h, k;
         for(h=0; h<filteringResult.length; h++){
             //성별이랑 주소 거르기
-            for(k=0; k<hal_idxArry.length; k++){
-                //취미 거르기 
-                if(filteringResult[h].hal_idx == hal_idxArry[k].hal_idx){
-                    break;
+            if(hal_idxArry){
+                for(k=0; k<hal_idxArry.length; k++){
+                    //취미 거르기 
+                    if(filteringResult[h].hal_idx == hal_idxArry[k].hal_idx){
+                        break;
+                    }
                 }
+                if(k != hal_idxArry.length){
+                    tempObj = {};
+                    tempObj.hal_idx = filteringResult[h].hal_idx;
+                    tempObj.hal_name = filteringResult[h].hal_name;
+                    tempObj.hal_age = filteringResult[h].hal_age;
+                    tempObj.hal_gender = filteringResult[h].hal_gender;
+                    tempObj.hal_address = filteringResult[h].hal_address;
+                    tempObj.hal_img = filteringResult[h].hal_img;
+                    filterResultData.push(tempObj);
+                }
+                console.log("잇다!")
             }
-            if(k != hal_idxArry.length){
+            else{
+                console.log("없다!")
                 tempObj = {};
                 tempObj.hal_idx = filteringResult[h].hal_idx;
                 tempObj.hal_name = filteringResult[h].hal_name;
@@ -105,10 +137,8 @@ router.post('/', async(req, res)=> {
                 tempObj.hal_img = filteringResult[h].hal_img;
                 filterResultData.push(tempObj);
             }
+                
         }
-
-        console.log(filterResultData);
-
         
         let getinterestQuery = 'SELECT inter_idx FROM HalAe.halmate_inter WHERE hal_idx = ?';
         let getintertextQuery = 'SElECT inter_text FROM HalAe.interest WHERE inter_idx = ?';
@@ -121,7 +151,6 @@ router.post('/', async(req, res)=> {
             filterResultData[n].interestArry = [];
             for(let m=0; m<inter_idxArry.length; m++){
                 inter_textArry =  await db.queryParam_Arr(getintertextQuery, inter_idxArry[m].inter_idx); 
-                console.log(inter_textArry);
 
                 filterResultData[n].interestArry.push(inter_textArry[0].inter_text);
                 
@@ -167,7 +196,7 @@ router.post('/', async(req, res)=> {
             "message" : "Internal Server error"
         });
         return;
-    }
+        }
     }
     
     else{
