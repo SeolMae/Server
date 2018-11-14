@@ -17,9 +17,8 @@ router.get('/:hal_idx', async(req, res) =>{
         
         return;
       }
-
-    
     try{
+        let boardResult=[];
         let boardResultData = {};
 
         //board 테이블 할머니 게시글 정보 가져오기
@@ -33,18 +32,19 @@ router.get('/:hal_idx', async(req, res) =>{
       
             return;
           }
+        for(var i=0;i<board_Result.length;i++){
+            boardResultData = {};
+            boardResultData.board_idx = board_Result[i].board_idx;
+            boardResultData.board_title = board_Result[i].board_title;
+            boardResultData.board_img = board_Result[i].board_img;
+            boardResultData.board_time = board_Result[i].board_time;
+            boardResult.push(boardResultData);
+        }
 
-        boardResultData.board_idx = board_Result[0].board_idx;
-        boardResultData.board_title = board_Result[0].board_title;
-        boardResultData.board_img = board_Result[0].board_img;
-        boardResultData.board_time = board_Result[0].board_time;
-
-
-        console.log(boardResultData);
 
         res.status(201).send({
             "message" : "get halmate information Success",
-            result : boardResultData
+            result : boardResult
           });
       
 

@@ -118,16 +118,14 @@ router.post('/', async(req, res)=> {
                     tempObj = {};
                     tempObj.hal_idx = filteringResult[h].hal_idx;
                     tempObj.hal_name = filteringResult[h].hal_name;
-                    tempObj.hal_age = filteringResult[h].hal_age;
+                    tempObj.hal_azoge = filteringResult[h].hal_age;
                     tempObj.hal_gender = filteringResult[h].hal_gender;
                     tempObj.hal_address = filteringResult[h].hal_address;
                     tempObj.hal_img = filteringResult[h].hal_img;
                     filterResultData.push(tempObj);
                 }
-                console.log("잇다!")
             }
             else{
-                console.log("없다!")
                 tempObj = {};
                 tempObj.hal_idx = filteringResult[h].hal_idx;
                 tempObj.hal_name = filteringResult[h].hal_name;
