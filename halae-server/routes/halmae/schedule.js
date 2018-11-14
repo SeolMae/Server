@@ -21,40 +21,58 @@ router.get('/:hal_idx', async(req, res) =>{
     
     try{
         console.log(req.params.hal_idx);
-        let getsche_Query = 'SELECT usr_name, vol_date, vol_starttime, vol_endtime FROM HalAe.volunteer WHERE hal_idx = 1 order by vol_date asc'
+        let getmonth_Query = 'SELECT MONTH(vol_date) AS m, count(*) as n FROM HalAe.volunteer WHERE hal_idx = ? GROUP BY m';
+        let getmonth_Result = await db.queryParam_Arr(getmonth_Query, [req.params.hal_idx]);
+        let getsche_Query = 'SELECT usr_name, vol_date, vol_starttime, vol_endtime FROM HalAe.volunteer WHERE hal_idx = ? order by vol_date asc'
         let schedule_Result = await db.queryParam_Arr(getsche_Query, [req.params.hal_idx]);
         
-        console.log(schedule_Result);
-        
 
-        if(!schedule_Result){
+        if(!schedule_Result || !getmonth_Result){
             res.status(300).send({
               message: "No Data"
             });
             return;
         }
+        let result=[];
+        let result_bymon={};
         let result_data=[];
         var result_byday ={};
         var result_daysch=[];
         var result_onesch={};
-        var date = date_moment.date_no_change(schedule_Result[0].vol_date);
-
-        for(var i=0;i<schedule_Result.length ; i++){
-            result_onesch={};
-            result_onesch.usr_name = schedule_Result[i].usr_name;
-            result_onesch.starttime=schedule_Result[i].vol_starttime;
-            result_onesch.endtime = schedule_Result[i].vol_endtime;
-            console.log(moment(date,'YYYY-MM-DD').diff(schedule_Result[i].vol_date,'day'))
-            if(moment(date,'YYYY-MM-DD').diff(schedule_Result[i].vol_date,'day')!=0){//이전 것과 날짜가 다를 때
-                result_byday.date=date_moment.date_no_change(date);
-                result_byday.sch=result_daysch;
-                result_data.push(result_byday);
-                result_byday={};
-                result_daysch=[];
-            }
+        var date;
+        var i=0;
+    
+        for(var j=0;j<getmonth_Result.length;j++){
+            result_bymon={};
+            result_bymon.month=getmonth_Result[j].m;
+            date=date_moment.date_no_change(schedule_Result[i].vol_date);
+            for(var k=0;k<getmonth_Result[j].n ; k++){
+                result_onesch={};
+                result_onesch.usr_name = schedule_Result[i].usr_name;
+                result_onesch.starttime=schedule_Result[i].vol_starttime;
+                result_onesch.endtime = schedule_Result[i].vol_endtime;
+                if(moment(date,'YYYY-MM-DD').diff(schedule_Result[i].vol_date,'day')!=0){//이전 것과 날짜가 다를 때
+                    result_byday.date=date_moment.date_no_change(date);
+                    result_byday.sch=result_daysch;
+                    result_data.push(result_byday);
+                    result_byday={};
+                    result_daysch=[];
+                }
                 result_daysch.push(result_onesch);
-            date = date_moment.date_no_change(schedule_Result[i].vol_date);
+                date = date_moment.date_no_change(schedule_Result[i].vol_date);
+                i++;
+            }
+            result_byday.date=date_moment.date_no_change(date);
+            result_byday.sch=result_daysch;
+            result_data.push(result_byday);
+            result_byday={};
+            result_daysch=[];
+
+            result_bymon.mon_sch=result_data;
+            result_data=[];
+            result.push(result_bymon);
         }
+       
         /*let result=[];
         for(let l=0;l<schedule_Result.length;l++){
             var op={};
@@ -112,7 +130,7 @@ router.get('/:hal_idx', async(req, res) =>{
 
         res.status(201).send({
             "message" : "get halmate schedule information Success",
-            data : result_data
+            data : result
           });
       
 
