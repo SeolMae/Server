@@ -26,24 +26,22 @@ router.get('/:align', async(req, res) => {
         let getdonateQuery;
 
         //기부 타이틀, 할머니 이름,나이,사진,성별, 모금 목표금액, 현재금액, 종료일 
-        
-        if(req.params.align == 0){
-            console.log(req.params.align);
-            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY finish_date ASC';
+        // 마감임박순(디폴트): 0, 최신순:1 , 모금액 적은 순 :2, 모금액 많은 순 :3
+        if(req.params.align == 0){ //마감임박순
+            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY finish_date asc';
 
-        }else if(req.params.align == 1){
-            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY goal_money ASC ';
+        }else if(req.params.align == 1){//최신순
+            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY start_date desc ';
 
-        }else if(req.params.align == 2){
-            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY goal_money DESC ';
+        }else if(req.params.align == 2){ //모금액 적은 순
+            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY now_money+0 asc ';
 
-        }else{
-            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY goal_money ASC ';
+        }else if(req.params.align == 3){ //모금액 많은 순
+            getdonateQuery = 'SELECT * FROM HalAe.donation ORDER BY now_money+0 desc ';
         }
         //-----------------------최신순 -> 디비 수정 해야 함 
         
         donate_Result = await db.queryParam_None(getdonateQuery);
-        console.log(donate_Result);
 
         if(!donate_Result){
             res.status(300).send({
@@ -69,10 +67,9 @@ router.get('/:align', async(req, res) => {
             tempObj.finish_date = date.datechange(donate_Result[i].finish_date);
             tempObj.duration = moment(donate_Result[i].finish_date).diff(new moment(),"days");
             tempObj.goal_money = donate_Result[i].goal_money;
-            tempObj.now_money = donate_Result[i].now_money;
+            tempObj.now_money = Number(donate_Result[i].now_money);
 
             halmateinfo = await db.queryParam_Arr(gethalmateinfoQuery, donate_Result[i].hal_idx);
-            console.log(halmateinfo);
 
             tempObj.hal_name = halmateinfo[0].hal_name;
             tempObj.hal_img = halmateinfo[0].hal_img;
