@@ -25,7 +25,7 @@ router.get('/:hal_idx', async(req, res) => {
         groupResultData.groupintro = groupintro_Result[0].hal_group_intro;
 
 
-        let getgroup_Query = 'SELECT usr_id, met_time, isleader FROM HalAe.group WHERE hal_idx = ?';
+        let getgroup_Query = 'SELECT u.usr_name, usr_img, isleader FROM HalAe.group as g, HalAe.user as u WHERE hal_idx = ? and g.usr_id=u.usr_id';
         let group_Result = await db.queryParam_Arr(getgroup_Query, [req.params.hal_idx]);
         
 
@@ -37,7 +37,7 @@ router.get('/:hal_idx', async(req, res) => {
         }
 
         if(!group_Result){
-        res.status(300).send({
+        res.status(203).send({
         message: "No Data"
         });
             return;

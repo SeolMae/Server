@@ -84,7 +84,7 @@ router.post('/', async(req, res)=> {
         }
         
         if(!filteringResult){
-            res.status(300).send({
+            res.status(204).send({
                 "message" : "No data"
               });
 
@@ -95,9 +95,9 @@ router.post('/', async(req, res)=> {
         if(req.body.hal_interest != "관심분야"){
             let gethal_idxQuery = 'SELECT hal_idx FROM HalAe.halmate_inter WHERE inter_idx = (SELECT inter_idx FROM HalAe.interest WHERE inter_text = ?)';
             hal_idxArry = await db.queryParam_Arr(gethal_idxQuery, [req.body.hal_interest]);
-            console.log(hal_idxArry);
+
             if(!hal_idxArry){
-                res.status(300).send({
+                res.status(204).send({
                     "message" : "No data"
                 });
                 return;
