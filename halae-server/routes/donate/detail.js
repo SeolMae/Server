@@ -22,8 +22,8 @@ router.get('/:don_idx', async(req, res) => {
         console.log(req.params.don_idx);
 
         let getdonateQuery = 'SELECT * FROM HalAe.donation WHERE don_idx = ?';
-        let donate_Result = await db.queryParam_Arr(getdonateQuery,[don_idx]);
-        console.log(donate_Result);
+        let donate_Result = await db.queryParam_Arr(getdonateQuery,[req.params.don_idx]);
+    
 
         if(!donate_Result){
             res.status(300).send({
@@ -48,14 +48,14 @@ router.get('/:don_idx', async(req, res) => {
             halmateinfo = await db.queryParam_Arr(gethalmateinfoQuery, donate_Result[0].hal_idx);
             console.log(halmateinfo);
 
-            tempObj.hal_name = halmateinfo[i].hal_name;
-            tempObj.hal_img = halmateinfo[i].hal_img;
-            tempObj.hal_gender = halmateinfo[i].hal_gender;
-            tempObj.hal_age = halmateinfo[i].hal_age;
+            tempObj.hal_name = halmateinfo[0].hal_name;
+            tempObj.hal_img = halmateinfo[0].hal_img;
+            tempObj.hal_gender = halmateinfo[0].hal_gender;
+            tempObj.hal_age = halmateinfo[0].hal_age;
 
         res.status(201).send({
             "message" : "get donate list Success",
-            result : temp_obj
+            result : tempObj
           });
       
 

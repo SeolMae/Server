@@ -62,6 +62,7 @@ router.get('/:align', async(req, res) => {
             tempObj={};
             tempObj.don_idx = donate_Result[i].don_idx;
             tempObj.don_title = donate_Result[i].don_title;
+            tempObj.don_text=donate_Result[i].don_text;
             //date.datechange(schedule_Result[0].vol_date)
             tempObj.start_date = date.datechange(donate_Result[i].start_date);
             tempObj.finish_date = date.datechange(donate_Result[i].finish_date);
