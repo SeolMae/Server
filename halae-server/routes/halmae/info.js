@@ -40,7 +40,7 @@ router.get('/:hal_idx', async(req, res) => {
     }
 
     //할머니 봉사자 수 가져오기
-    let countvol_Query = 'SELECT COUNT(*) AS vol_cnt FROM HalAe.volunteer WHERE hal_idx = ?';
+    let countvol_Query = 'SELECT COUNT(*) AS vol_cnt FROM HalAe.group WHERE hal_idx = ?';
     let countvol_Result = await db.queryParam_Arr(countvol_Query, [req.params.hal_idx]);
 
     infoResultData.vol_cnt = countvol_Result[0].vol_cnt;
