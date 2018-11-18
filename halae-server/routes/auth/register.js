@@ -9,7 +9,7 @@ router.post('/', async function(req, res){
 
     let token=req.headers.token; 
     let user_user_idx; //접속되어 있는 유저
-
+    
     if(token){
 
         let decoded = jwt.verify(token);
@@ -25,26 +25,36 @@ router.post('/', async function(req, res){
             res.status(403).send({
                 message : "no token"
             }); 
+
         return;
     }
-    let name =req.body.name;
-    let age = req.body.age;
-    let phone =req.body.phone;
-
-    let updateToken =
-    `
-    UPDATE user SET usr_name =? and usr_age = ? and usr_phone = ? where usr_id = ?;
-    `;
-    let updatefcmToken = await db.queryParam_Arr(updateToken, [name, age, phone, user_user_idx]);
-
-        res.status(201).send({
-          data : {
-            id : user_user_idx,
-            token : token
-          },
-          message : "Successfully register user's info"
-        });
+    try{
+        let name =req.body.name;
+        let age = req.body.age;
+        let phone =req.body.phone;
     
+        let updateToken =
+        `
+        UPDATE user SET usr_name =? and usr_age = ? and usr_phone = ? where usr_id = ?;
+        `;
+        let updatefcmToken = await db.queryParam_Arr(updateToken, [name, age, phone, user_user_idx]);
+    
+            res.status(201).send({
+              data : {
+                id : user_user_idx,
+                token : token
+              },
+              message : "Successfully register user's info"
+            });
+        
+    } catch(err){
+        let deleteQuery = 'DELETE FROM HalAe.user where usr_id=?';
+        let deleteResult = await db.queryParam_Arr(deleteQuery,[user_user_idx]);
+        res.status(400).send({
+            message : err
+        });
+        return;
+    }  
 });
 
 module.exports = router;
