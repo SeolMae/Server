@@ -6,7 +6,6 @@ const db = require('../../module/pool.js');
 const jwt = require('../../module/jwt.js');
 
 router.post('/', async function(req, res){
-
     let token=req.headers.token; 
     let user_user_idx; //접속되어 있는 유저
     
@@ -32,13 +31,19 @@ router.post('/', async function(req, res){
         let name =req.body.name;
         let age = req.body.age;
         let phone =req.body.phone;
-    
+        let address = req.body.address;
         let updateToken =
         `
-        UPDATE user SET usr_name =? and usr_age = ? and usr_phone = ? where usr_id = ?;
+        INSERT INTO user (usr_id, usr_name, usr_img, usr_phone, usr_address)
+        VALUES (?, ?, ?, ?, ?);
         `;
-        let updatefcmToken = await db.queryParam_Arr(updateToken, [name, age, phone, user_user_idx]);
-    
+        let updatefcmToken = await db.queryParam_Arr(updateToken, [user_user_idx, name, age, phone,address, user_user_idx]);
+        if(!updatefcmToken){
+            res.status(500).send({
+                
+                message : "incorrect "
+              });
+        }
             res.status(201).send({
               data : {
                 id : user_user_idx,
@@ -48,8 +53,6 @@ router.post('/', async function(req, res){
             });
         
     } catch(err){
-        let deleteQuery = 'DELETE FROM HalAe.user where usr_id=?';
-        let deleteResult = await db.queryParam_Arr(deleteQuery,[user_user_idx]);
         res.status(400).send({
             message : err
         });

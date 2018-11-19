@@ -140,10 +140,7 @@ router.post('/', async(req, res, next) => {
           });
         }
        } else{ // 다른 기기이고 회원이 아닐때
-        console.log("비회원입니다.")
-
-        let insertResult = await db.queryParam_Arr(insertQuery,[id, nickname ,img_url]);
-        
+        console.log("비회원입니다.")        
         token = jwt.sign(id);
         console.log(token);
         res.status(201).send({
