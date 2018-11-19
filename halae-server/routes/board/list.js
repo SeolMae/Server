@@ -33,14 +33,13 @@ router.get('/', async function(req, res){
 
     let bookmark_flag=0;
 
-    let board_list;
+    let board_list=[];
 
     let selectBoardQuery = 'SELECT * FROM HalAe.board order by board_time desc'; 
     let selectBoardResult = await db.queryParam_None(selectBoardQuery); 
-
     for(var i=0;i<selectBoardResult.length;i++){
         let board_idx=selectBoardResult[i].board_idx;
-
+       
         //user_idx를 가져오기 위한 user_board 테이블에 접근
         let selectWriterOneBoardQuery = 'SELECT * FROM HalAe.board WHERE board_idx = ?'; 
         let selectWriterOneBoardResult = await db.queryParam_Arr(selectWriterOneBoardQuery, [board_idx]);
@@ -59,7 +58,7 @@ router.get('/', async function(req, res){
 
             if(checkLikeInBoardRes.length>0) bookmark_flag=1;
         }
-        if(!selectOneBoardResult || !selectWriterOneBoardResult){
+        if(!selectWriterOneBoardResult){
             res.status(500).send({
                 message : "Internal Server Error2"
             });
@@ -68,7 +67,7 @@ router.get('/', async function(req, res){
         else {
 
             //글쓴이 이름과 이미지 가지고 오기
-            let getUserId = 'SELECT * FROM HalAe.user WHERE usr_id = ?'; 
+            let getUserId = 'SELECT * FROM HalAe.user WHERE usr_name = ?'; 
             let getUserIdRes = await db.queryParam_Arr(getUserId, [selectWriterOneBoardResult[0].board_usr]);
             
             if(!getUserIdRes){
@@ -85,10 +84,10 @@ router.get('/', async function(req, res){
             board_idx : board_idx,
             usr_img : user_img,
             usr_name : user_name,
-            board_date : moment(selectOneBoardResult[0].board_time).format('YYYY.MM.DD'),
-            board_title : selectOneBoardResult[0].board_title,
-            board_img : selectOneBoardResult[0].board_img,
-            board_desc : selectOneBoardResult[0].board_text,
+            board_date : moment(selectWriterOneBoardResult[0].board_time).format('YYYY.MM.DD'),
+            board_title : selectWriterOneBoardResult[0].board_title,
+            board_img : selectWriterOneBoardResult[0].board_img,
+            board_desc : selectWriterOneBoardResult[0].board_text,
             bookmark_flag : bookmark_flag
         }
         board_list.push(data_res);

@@ -74,7 +74,7 @@ router.get('/:board_idx', async function(req, res){
         else {
 
             //글쓴이 이름과 이미지 가지고 오기
-            let getUserId = 'SELECT * FROM HalAe.user WHERE usr_id = ?'; 
+            let getUserId = 'SELECT * FROM HalAe.user WHERE usr_name = ?'; 
             let getUserIdRes = await db.queryParam_Arr(getUserId, [selectWriterOneBoardResult[0].board_usr]);
             
             if(!getUserIdRes){
